@@ -51,6 +51,37 @@ class PathmaticsCreativeText2:
         return result_df
 
 
-#Function(): Load multiple csvs into a single pandas dataframe
+    def tag_creative_text(self, creative_text, tag_name):
+        """
+        Intakes a string of creative text and looks for presence of keywords specified in the 'self.tags' dictionary.
 
-#Function(): Intake a creative text string, a the name of th
+        Args:
+            creative_text (str):
+                - Creative text string to analyze.
+            tag_name (str):
+                - Tag name to use when matching creative text.
+
+        Returns:
+            bool:
+                - True if any tag values are found in the given creative text
+                - Else, False
+        """
+
+        if tag_name not in self.tags:
+            raise KeyError(f"tag_name '{tag_name}' not found in 'tags' dictionary.")
+
+        creative_text = str(creative_text)
+
+        # Tag values to search creative_text for
+        tag_values = self.tags[tag_name]
+
+        # Loop through each tag value and see if tag is present in creative text
+        matches = []
+        for tag_value in tag_values:
+
+            # Only matches if target word is between two spaces
+            search_object = re.search(r"\b" + tag_value + r"\b", creative_text, flags=re.I)
+            matches.append(search_object)
+
+        # If any of the tag values are found in the creative_text, return True, else return False
+        return any(matches)
