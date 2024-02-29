@@ -85,3 +85,16 @@ class PathmaticsCreativeText2:
 
         # If any of the tag values are found in the creative_text, return True, else return False
         return any(matches)
+    
+
+    def get_tagged_creative_text_df(self, df, creative_text_column_name="Creative Text"):
+
+        if creative_text_column_name not in df.columns:
+            raise Exception(f"No '{creative_text_column_name}' column found in dataframe.
+                             Please make sure that you have a creative text column in your dataframe and correctly specify the column
+                             name for the 'creative_text_columns_name' argument")
+
+        for tag_name in tqdm(self.tag_dict.keys()):
+            df[f"{tag_name}"] = df.apply(lambda x: self.tag_creative_text(x[creative_text_column_name], tag_name), axis=1)
+
+        return df  
