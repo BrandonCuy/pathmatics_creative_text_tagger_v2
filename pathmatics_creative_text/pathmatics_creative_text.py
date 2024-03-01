@@ -21,9 +21,14 @@ class PathmaticsCreativeText2:
                 raise TypeError(f"All items in the list for key '{key}' must be strings.")
         
         self.tags = tags
+        self.output_folder_name = "output"
 
 
-    def load_csvs(self, filepaths, skiprows=1):
+    def load_csvs(
+            self,
+            filepaths,
+            skiprows=1
+            ):
         """
         Concatenates CSV files into a single pandas DataFrame.
 
@@ -34,6 +39,9 @@ class PathmaticsCreativeText2:
         Returns:
             pd.DataFrame: Concatenated DataFrame.
         """
+
+        if not isinstance(filepaths, list):
+            raise TypeError("'filepaths' argument must be a list of filepaths.")
 
         # Initialize an empty list to store DataFrames
         dfs = []
@@ -52,7 +60,11 @@ class PathmaticsCreativeText2:
         return result_df
 
 
-    def tag_creative_text(self, creative_text, tag_name):
+    def tag_creative_text(
+            self,
+            creative_text,
+            tag_name
+            ):
         """
         Intakes a string of creative text and looks for presence of keywords specified in the 'self.tags' dictionary.
 
@@ -88,7 +100,11 @@ class PathmaticsCreativeText2:
         return any(matches)
     
 
-    def get_tagged_creative_text(self, df, creative_text_column_name="Creative Text"):
+    def get_tagged_creative_text(
+            self,
+            df,
+            creative_text_column_name="Creative Text"
+            ):
 
         # There must be a creative text column in the dataframe
         if creative_text_column_name not in df.columns:
@@ -100,3 +116,38 @@ class PathmaticsCreativeText2:
             df[f"{tag_name}"] = df.apply(lambda x: self.tag_creative_text(x[creative_text_column_name], tag_name), axis=1)
 
         return df  
+    
+
+    def get_tagged_creative_text_csv(
+            self,
+            file_path_list,
+            output_file_name,
+            filter_output=True,
+            creative_text_column_name="Creative Text",
+            spend_column_name="Spend (USD)",
+            impressions_column_name="Impressions",
+            skiprows=1
+            ):
+        
+        print("Tagging creative text...")
+        
+        # Load csvs into an untagged dataframe
+        untagged_df = self.load_csvs(file_path_list, skiprows)
+        
+        # Create new dataframe of tagged creative text
+        tagged_df = self.get_tagged_creative_text(untagged_df, creative_text_column_name)
+        
+        if filter_output is True:
+            
+            tag_names = list(self.tags.keys())
+            
+            # Only returns rows where there was a creative text match for at least one of the tag names
+            tagged_df = tagged_df[tagged_df[tag_names].any(axis=1)]  
+
+        # If the specified output folder doesn't exist, create a new directory
+        if not os.path.isdir(f"{self.output_folder_name}/{output_file_name}"):
+            os.makedirs(f"{self.output_folder_name}/{output_file_name}")     
+        
+        # Write the tagged dataframe to a csv
+        tagged_df.to_csv(f"{self.output_folder_name}/{output_file_name}/{output_file_name}.csv", sep=",", encoding="utf-8", index=False)
+        print(f"{output_file_name}.csv successfully written to {self.output_folder_name}/{output_file_name} folder")
