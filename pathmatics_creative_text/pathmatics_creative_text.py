@@ -88,12 +88,15 @@ class PathmaticsCreativeText2:
         return any(matches)
     
 
-    def get_tagged_creative_text_df(self, df, creative_text_column_name="Creative Text"):
+    def get_tagged_creative_text(self, df, creative_text_column_name="Creative Text"):
 
+        # There must be a creative text column in the dataframe
         if creative_text_column_name not in df.columns:
-            raise Exception(f"No '{creative_text_column_name}' column found in dataframe.Please make sure that you have a creative text column in your dataframe and correctly specify the column name for the 'creative_text_columns_name' argument")
+            raise Exception(f"No '{creative_text_column_name}' column not found in dataframe. Please make sure that you have a creative text column in your dataframe and correctly specify the column name for the 'creative_text_columns_name' argument")
 
-        for tag_name in tqdm(self.tag_dict.keys()):
+        # Uses the tag_creative_text() method on each creative text row for each tag in the tags dict
+        # Creates a new boolean column in the returned df for each tag name
+        for tag_name in tqdm(self.tags):
             df[f"{tag_name}"] = df.apply(lambda x: self.tag_creative_text(x[creative_text_column_name], tag_name), axis=1)
 
         return df  
