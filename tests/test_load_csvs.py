@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from pathmatics_creative_text.pathmatics_creative_text import PathmaticsCreativeText2
+from creative_text.creative_text import PathmaticsCreativeText2
 
 csvs = {
     "valid1": "https://drive.google.com/uc?id=1gQN-5aYhLozZfwAiiPbompKxiE1jPQZY",

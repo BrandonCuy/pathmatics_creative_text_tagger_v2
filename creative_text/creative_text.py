@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from tqdm import tqdm
 
-class PathmaticsCreativeText2:
+class CreativeText:
 
     def __init__(self, tags):
 
