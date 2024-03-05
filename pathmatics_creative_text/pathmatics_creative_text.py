@@ -2,6 +2,8 @@ import textwrap
 import re
 import os
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt 
 from tqdm import tqdm
 
 class PathmaticsCreativeText2:
@@ -23,7 +25,6 @@ class PathmaticsCreativeText2:
         
         self.tags = tags
         self.output_folder_name = "output"
-
 
     def load_csvs(
             self,
@@ -67,7 +68,6 @@ class PathmaticsCreativeText2:
 
         return result_df
 
-
     def tag_creative_text(
             self,
             creative_text,
@@ -107,12 +107,26 @@ class PathmaticsCreativeText2:
         # If any of the tag values are found in the creative_text, return True, else return False
         return any(matches)
     
-
     def get_tagged_creative_text(
             self,
             df,
             creative_text_column_name="Creative Text"
             ):
+        """
+        Intakes a pandas dataframe and uses the tag_creative_text() method on each row of creative text. 
+        For each tag in 'tags' creates a new column with a boolean value for whether tag values were found in the creative text.
+
+        Args:
+            df (Dataframe):
+                - The pandas dataframe to tag creative text for.
+            creative_text_column_name (str):
+                - The name of the column that holds ad creative text.
+                - Defaults to 'Creative Text'. This is the default creative text column name in Pathmatics Report Builder.
+
+        Returns:
+            dataframe:
+                - Returns a copy of the inputted dataframe with new columns with boolean values for whether or not tag values were found in the creative text.
+        """
 
         # There must be a creative text column in the dataframe
         if creative_text_column_name not in df.columns:
@@ -130,7 +144,42 @@ class PathmaticsCreativeText2:
             df[f"{tag_name}"] = df.apply(lambda x: self.tag_creative_text(x[creative_text_column_name], tag_name), axis=1)
 
         return df  
-    
+
+    def chart_data(
+            self,
+            df,
+            output_file_name,
+            spend_column_name="Spend",
+            impression_column_name="Impressions"
+            ):
+        
+        for metric in [spend_column_name, impression_column_name]:
+        
+            plt.style.use("seaborn-v0_8")
+
+            # Create number of subplots equal to number of tags
+            number_of_subplots = len(self.tags)
+
+            fig, axes = plt.subplots(nrows=number_of_subplots, ncols=1, sharex=True)
+            if not isinstance(axes, np.ndarray):
+                axes = [axes]
+
+            fig.suptitle(f"Advertising {metric} Over Time By Tag")
+            fig.supxlabel("Date")
+            fig.supylabel(metric)
+
+            for ax, tag in zip(axes, self.tags):
+
+                filtered_df = df[df[tag] == True].groupby(by=["Date"])[[spend_column_name, impression_column_name]].sum().reset_index()
+
+                ax.plot(pd.to_datetime(filtered_df["Date"]), filtered_df[metric], label=tag)
+                ax.legend(loc="upper left")
+
+            plt.gcf().autofmt_xdate()
+            plt.tight_layout()
+
+            plt.savefig(f"{self.output_folder_name}/{output_file_name}/{output_file_name}_{metric}_plot.png")
+            print(f"{output_file_name}_{metric}_plot.png successfully written to {self.output_folder_name}/{output_file_name} folder")
 
     def get_tagged_creative_text_csv(
             self,
@@ -142,7 +191,7 @@ class PathmaticsCreativeText2:
             impressions_column_name="Impressions",
             skiprows=1
             ):
-        
+
         print("Tagging creative text...")
         
         # Load csvs into an untagged dataframe
@@ -165,3 +214,5 @@ class PathmaticsCreativeText2:
         # Write the tagged dataframe to a csv
         tagged_df.to_csv(f"{self.output_folder_name}/{output_file_name}/{output_file_name}.csv", sep=",", encoding="utf-8", index=False)
         print(f"{output_file_name}.csv successfully written to {self.output_folder_name}/{output_file_name} folder")
+
+        self.chart_data(tagged_df, output_file_name, spend_column_name, impressions_column_name)
