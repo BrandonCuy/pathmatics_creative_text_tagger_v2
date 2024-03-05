@@ -1,6 +1,7 @@
-import pandas as pd
+import textwrap
 import re
 import os
+import pandas as pd
 from tqdm import tqdm
 
 class PathmaticsCreativeText2:
@@ -42,6 +43,8 @@ class PathmaticsCreativeText2:
 
         if not isinstance(filepaths, list):
             raise TypeError("'filepaths' argument must be a list of filepaths.")
+        if not filepaths:
+            raise ValueError("'filepaths' list cannot be empty.")
 
         # Initialize an empty list to store DataFrames
         dfs = []
@@ -51,8 +54,13 @@ class PathmaticsCreativeText2:
             try:
                 df = pd.read_csv(filepath, skiprows=skiprows)
                 dfs.append(df)
+            except FileNotFoundError as e:
+                raise FileNotFoundError(f"The file '{filepath}' was not found. Please double check your spelling and capitalization.")
             except pd.errors.EmptyDataError:
                 print(f"Warning: File '{filepath}' is empty. Skipping.")
+
+        if all(df.empty for df in dfs):
+            raise pd.errors.EmptyDataError("All inputted csvs are empty.")
 
         # Concatenate the list of DataFrames into a single DataFrame
         result_df = pd.concat(dfs, ignore_index=True)
@@ -108,7 +116,13 @@ class PathmaticsCreativeText2:
 
         # There must be a creative text column in the dataframe
         if creative_text_column_name not in df.columns:
-            raise Exception(f"No '{creative_text_column_name}' column not found in dataframe. Please make sure that you have a creative text column in your dataframe and correctly specify the column name for the 'creative_text_columns_name' argument")
+
+            error_message = textwrap.dedent(f"""
+                '{creative_text_column_name}' column not found in dataframe.
+                Please make sure that you have a creative text column in your dataframe and correctly specify the column name for the 'creative_text_column_name' argument.
+                """).strip()
+            
+            raise ValueError(error_message)
 
         # Uses the tag_creative_text() method on each creative text row for each tag in the tags dict
         # Creates a new boolean column in the returned df for each tag name
