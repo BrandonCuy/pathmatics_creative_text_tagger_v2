@@ -55,6 +55,6 @@ Next we need to install the creative-text package and its dependencies (other Py
 4. And lastly, we need to install the project's dependencies (other packages needed in order for the creative-text package to work)
 
     ```bash
-    pip install git+https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2.git@v1.0.0
+    pip install -r https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/raw/v1.0.0/requirements.txt
     ```
 
