@@ -10,6 +10,7 @@ class CreativeText:
 
     def __init__(self):
         self.tags = None
+        self.output_folder_name = "output"
 
     @property
     def set_tags(self):
