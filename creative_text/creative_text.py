@@ -94,7 +94,9 @@ class CreativeText:
                 - True if any tag values are found in the given creative text
                 - Else, False
         """
-
+        if self.tags is None:
+            raise RuntimeError("'tags' is not set. Please use the 'set_tags' setter to set desired tags.")
+        
         if tag_name not in self.tags:
             raise KeyError(f"tag_name '{tag_name}' not found in 'tags' dictionary.")
 
@@ -135,6 +137,9 @@ class CreativeText:
                 - Returns a copy of the inputted dataframe with new columns with boolean values for whether or not tag values were found in the creative text.
         """
 
+        if self.tags is None:
+            raise RuntimeError("'tags' is not set. Please use the 'set_tags' setter to set desired tags.")
+        
         # There must be a creative text column in the dataframe
         if creative_text_column_name not in df.columns:
 
@@ -160,6 +165,9 @@ class CreativeText:
             impression_column_name="Impressions"
             ):
         
+        if self.tags is None:
+            raise RuntimeError("'tags' is not set. Please use the 'set_tags' setter to set desired tags.")
+
         for metric in [spend_column_name, impression_column_name]:
         
             plt.style.use("seaborn-v0_8")
