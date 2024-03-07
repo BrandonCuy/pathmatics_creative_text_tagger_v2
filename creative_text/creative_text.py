@@ -8,23 +8,30 @@ from tqdm import tqdm
 
 class CreativeText:
 
-    def __init__(self, tags):
+    def __init__(self):
+        self.tags = None
+
+    @property
+    def set_tags(self):
+        return self.tags
+
+    @set_tags.setter
+    def set_tags(self, new_tags):
 
         # Check if tag_dict is a dictionary data type
-        if not isinstance(tags, dict):
-            raise TypeError("'tag_dict' must be a dictionary.")
-        
+        if not isinstance(new_tags, dict):
+            raise TypeError("'tags' must be a dictionary.")
+
         # Check if all keys are string and values are list lists of strings
-        for key, value in tags.items():
+        for key, value in new_tags.items():
             if not isinstance(key, str):
                 raise TypeError(f"Key '{key}' must be a string.")
             if not isinstance(value, list):
                 raise TypeError(f"Value for key '{key}' must be a list.")
             if any(not isinstance(item, str) for item in value):
                 raise TypeError(f"All items in the list for key '{key}' must be strings.")
-        
-        self.tags = tags
-        self.output_folder_name = "output"
+
+        self.tags = new_tags
 
     def load_csvs(
             self,
