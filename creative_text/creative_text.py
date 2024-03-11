@@ -9,23 +9,33 @@ from tqdm import tqdm
 class CreativeText:
 
     def __init__(self):
-        self.tags = None
-        self.df = None
+        self._tags = None
+        self._df = None
         self.output_folder_name = "output"
+    
+    def set_tags(
+            self,
+            tags
+    ):
+        """
+        Intakes a dictionary of keyword tags and assigns them to the 'self.tags' variable
 
-    @property
-    def set_tags(self):
-        return self.tags
+        Args:
+            tags (dictionary):
+                - A dictionary of keyword tags
 
-    @set_tags.setter
-    def set_tags(self, new_tags):
+        Returns:
+            None
 
+        Note:
+            This method updates the 'self.tags' variable with the provided keyword tags dictionary.
+        """
         # Check if tag_dict is a dictionary data type
-        if not isinstance(new_tags, dict):
+        if not isinstance(tags, dict):
             raise TypeError("'tags' must be a dictionary.")
 
         # Check if all keys are string and values are list lists of strings
-        for key, value in new_tags.items():
+        for key, value in tags.items():
             if not isinstance(key, str):
                 raise TypeError(f"Key '{key}' must be a string.")
             if not isinstance(value, list):
@@ -33,15 +43,7 @@ class CreativeText:
             if any(not isinstance(item, str) for item in value):
                 raise TypeError(f"All items in the list for key '{key}' must be strings.")
 
-        self.tags = new_tags
-
-    @property
-    def set_df(self):
-        return self.df
-
-    @set_df.setter
-    def set_df(self, new_df):
-        raise NotImplementedError("Direct assignment of 'self.df' is not allowed. Use load_csvs() method instead.")
+        self.tags = tags
 
     def load_csvs(
             self,
@@ -56,7 +58,10 @@ class CreativeText:
                 - List of filepaths for CSV files.
 
         Returns:
-            pd.DataFrame: Concatenated DataFrame.
+            None
+
+        Note:
+            This method updates the 'self.df' variable with concatenated Pandas dataframe of the provided CSV files.
         """
 
         if not isinstance(filepaths, list):
