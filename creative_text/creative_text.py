@@ -10,6 +10,7 @@ class CreativeText:
 
     def __init__(self):
         self.tags = None
+        self.df = None
         self.output_folder_name = "output"
 
     @property
@@ -34,13 +35,21 @@ class CreativeText:
 
         self.tags = new_tags
 
+    @property
+    def set_df(self):
+        return self.df
+
+    @set_df.setter
+    def set_df(self, new_df):
+        raise NotImplementedError("Direct assignment of 'self.df' is not allowed. Use load_csvs() method instead.")
+
     def load_csvs(
             self,
             filepaths,
             skiprows=1
             ):
         """
-        Concatenates CSV files into a single pandas DataFrame.
+        Concatenates CSV files into a single pandas DataFrame and assigns it to the 'self.df' varibale.
 
         Args:
             filepaths (list):
@@ -74,7 +83,7 @@ class CreativeText:
         # Concatenate the list of DataFrames into a single DataFrame
         result_df = pd.concat(dfs, ignore_index=True)
 
-        return result_df
+        self.df = result_df
 
     def tag_creative_text(
             self,
