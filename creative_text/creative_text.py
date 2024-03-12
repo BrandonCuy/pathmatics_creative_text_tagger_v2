@@ -3,6 +3,7 @@ import re
 import os
 import pandas as pd
 import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt 
 from tqdm import tqdm
 
@@ -13,7 +14,7 @@ class CreativeText:
         self._df = None
         self.output_folder_name = "output"
     
-    def set_tags(
+    def load_tags(
             self,
             tags
     ):
@@ -89,6 +90,66 @@ class CreativeText:
         result_df = pd.concat(dfs, ignore_index=True)
 
         self.df = result_df
+
+    def get_word_frequency(
+            self,
+            creative_text_column_name="Creative Text",
+            ngram_range = (1,2),
+            stop_words= "english"
+            ):
+        """
+        Returns a dataframe of word frequency in the 'Creative Text' column of the 'self.df' dataframe.
+
+        Args:
+            creative_text_column_name (str):
+                - The name of the creative text column in the self.df dataframe.
+                - Defaults to "Creative Text"
+            ngram_range (tuple):
+                - The lower and upper boundary for keyword phrases to search for.
+                - For example (1,1), will only search for single word phrases but (1,2) will search for both single word and two word phrases.
+                - Defaults to (1,2)
+            stop_words (str):
+                - Whether or not to remove common stop words from the results. (ex. words like "a", "the", "is", etc.)
+                - Defaults to "english"
+
+        Returns:
+            Dataframe
+                - Returns a pandas dataframe of word frequency in the creative text column of the self.df dataframe.
+
+        Notes:
+            - Before running this method, you must first set the 'self.df' variable by using the load_csvs() method.
+        """
+
+        # Create a CountVectorizer instance
+        vectorizer = CountVectorizer(stop_words=stop_words, ngram_range=ngram_range)
+
+        # Get a list of unique creative text from the self.df dataframe
+        creative_text_list = self.df.dropna(subset=[creative_text_column_name])[creative_text_column_name].unique().tolist()
+
+        # Transform the text data into a bag of words representation
+        X = vectorizer.fit_transform(creative_text_list)
+
+        # Get the feature names (words)
+        feature_names = vectorizer.get_feature_names_out()
+
+        # Convert the result to a dense NumPy array for better visualization
+        dense_array = X.toarray()
+
+        # Create a Pandas DataFrame
+        df = pd.DataFrame(dense_array, columns=feature_names)
+
+        # If the count of a word is more than 1, then return 1, else return the original number
+        # We do this because we don't want the total frequency of each word in the creative text. We only want binary yes or no whether the words was found our not. 
+        df = df.map(lambda x: 1 if x > 1 else x)
+
+        # Transform output dataframe
+        word_counts = df.sum(axis=0)
+
+        result_df = pd.DataFrame({'word': feature_names, 'frequency_count': word_counts}).reset_index(drop=True)
+        result_df["total_unique_creatives_analyzed"] = len(creative_text_list)
+        result_df["frequency_percentage"] = round(result_df["frequency_count"] / result_df["total_unique_creatives_analyzed"], 2)
+
+        return result_df.sort_values(by="frequency_count", ascending=False).reset_index(drop=True)
 
     def tag_creative_text(
             self,
