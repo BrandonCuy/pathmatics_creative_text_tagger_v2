@@ -1,4 +1,5 @@
 import textwrap
+from time import time
 import re
 import os
 import pandas as pd
@@ -119,9 +120,13 @@ class CreativeText:
         Notes:
             - Before running this method, you must first set the 'self.df' variable by using the load_csvs() method.
         """
-
+        
         # Create a CountVectorizer instance
-        vectorizer = CountVectorizer(stop_words=stop_words, ngram_range=ngram_range)
+        vectorizer = CountVectorizer(
+            stop_words=stop_words,
+            ngram_range=ngram_range,
+            binary=True
+            )
 
         # Get a list of unique creative text from the self.df dataframe
         creative_text_list = self.df.dropna(subset=[creative_text_column_name])[creative_text_column_name].unique().tolist()
@@ -137,10 +142,6 @@ class CreativeText:
 
         # Create a Pandas DataFrame
         df = pd.DataFrame(dense_array, columns=feature_names)
-
-        # If the count of a word is more than 1, then return 1, else return the original number
-        # We do this because we don't want the total frequency of each word in the creative text. We only want binary yes or no whether the words was found our not. 
-        df = df.map(lambda x: 1 if x > 1 else x)
 
         # Transform output dataframe
         word_counts = df.sum(axis=0)
