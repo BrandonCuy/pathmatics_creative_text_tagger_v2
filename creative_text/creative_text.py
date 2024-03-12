@@ -194,7 +194,6 @@ class CreativeText:
     
     def get_tagged_creative_text(
             self,
-            df,
             creative_text_column_name="Creative Text"
             ):
         """
@@ -214,10 +213,13 @@ class CreativeText:
         """
 
         if self.tags is None:
-            raise RuntimeError("'tags' is not set. Please use the 'set_tags' setter to set desired tags.")
+            raise RuntimeError("'tags' is not set. Please use the 'set_tags' method to set desired tags.")
+        
+        if self.df is None:
+            raise RuntimeError("'df' is not set. Please use the 'load_csvs' method to load dataframe.")
         
         # There must be a creative text column in the dataframe
-        if creative_text_column_name not in df.columns:
+        if creative_text_column_name not in self.df.columns:
 
             error_message = textwrap.dedent(f"""
                 '{creative_text_column_name}' column not found in dataframe.
@@ -229,13 +231,12 @@ class CreativeText:
         # Uses the tag_creative_text() method on each creative text row for each tag in the tags dict
         # Creates a new boolean column in the returned df for each tag name
         for tag_name in tqdm(self.tags):
-            df[f"{tag_name}"] = df.apply(lambda x: self.tag_creative_text(x[creative_text_column_name], tag_name), axis=1)
+            self.df[f"{tag_name}"] = self.df.apply(lambda x: self.tag_creative_text(x[creative_text_column_name], tag_name), axis=1)
 
-        return df  
+        return self.df  
 
     def chart_data(
             self,
-            df,
             output_file_name,
             spend_column_name="Spend",
             impression_column_name="Impressions"
@@ -261,7 +262,7 @@ class CreativeText:
 
             for ax, tag in zip(axes, self.tags):
 
-                filtered_df = df[df[tag] == True].groupby(by=["Date"])[[spend_column_name, impression_column_name]].sum().reset_index()
+                filtered_df = self.df[self.df[tag] == True].groupby(by=["Date"])[[spend_column_name, impression_column_name]].sum().reset_index()
 
                 ax.plot(pd.to_datetime(filtered_df["Date"]), filtered_df[metric], label=tag)
                 ax.legend(loc="upper left")
