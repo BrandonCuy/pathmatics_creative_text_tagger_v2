@@ -7,10 +7,10 @@ This walkthrough and installation guide assumes no previous coding knowledge or 
 
 ## Table of Contents
 
-- [Anaconda Installation](#anaconda)
-- [Visual Studio Code Installation](#installation)
-- [Example Work]
-- [creative-text Package Installation](#usage)
+- Anaconda Installation
+- Visual Studio Code Installation
+- Example Workbook Download
+- creative-text Package Installation
 
 ## Step 1: Anaconda Installation
 
