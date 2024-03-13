@@ -69,13 +69,13 @@ Next we need to install the creative-text package and its dependencies (other Py
 
     It will again ask you "Proceed ([y]/n)?. Simply type 'y' and then hit enter.
    
-5. The last thing we need to do is install the creative-text package by copying and pasting the following command into your terminal and click "enter". This will install the most recent stable version v1.1.0 of the creative-text package as well as all of its dependencies (packages that this package is built on). It might take some time to finish downloading everything, but once it is complete, we should be good to go.
+5. The next thing we need to do is install the creative-text package by copying and pasting the following command into your terminal and click "enter". This will install the most recent stable version v1.1.0 of the creative-text package. It might take some time to finish downloading everything.
 
     ```bash
     pip install git+https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2.git@v1.1.0
     ```
 
-6. The last thing we need to do is install the creative-text package by copying and pasting the following command into your terminal and click "enter". This will install the most recent stable version v1.1.0 of the creative-text package as well as all of its dependencies (packages that this package is built on). It might take some time to finish downloading everything, but once it is complete, we should be good to go.
+6. The last thing we need to do is install the dependencies of the Creative Text package (other packages that the Creative Text packages requires to run). We can do this by copying and pasting the following command into your terminal and clicking "enter".
 
     ```bash
     pip install -r https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/raw/v1.1.0/requirements.txt
