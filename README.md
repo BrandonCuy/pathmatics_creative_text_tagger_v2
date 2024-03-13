@@ -9,6 +9,7 @@ This walkthrough and installation guide assumes no previous coding knowledge or 
 
 - [Anaconda Installation](#anaconda)
 - [Visual Studio Code Installation](#installation)
+- [Example Work]
 - [creative-text Package Installation](#usage)
 
 ## Step 1: Anaconda Installation
@@ -23,7 +24,13 @@ Next we will want to install a text editor that will allow us to write and inter
 
 [Visual Studio Code Download Webpage](https://code.visualstudio.com/Download)
 
-## Step 3: creative-text Package Installation
+## Step 3: Creative Text Example Workbook Download
+
+In order to make the process of using these functions easier, I have created a sample that lives in a Google Drive folder. You can find the example in the following link and copy the entire folder to your own computer:
+
+[Creative Text Example Workbook Google Drive](https://drive.google.com/drive/folders/1wZpnN7AM1UlJ8BVbpq2RHduL73Pm-_Zl?usp=drive_link)
+
+## Step 4: creative-text Package Installation
 
 Next we need to install the creative-text package and its dependencies (other Python packages needed in order for creative-text to run). We need to do this via the command line (can be scary to interact with at first but all you will need to do is just some copying and pasting).
 
@@ -39,22 +46,31 @@ Next we need to install the creative-text package and its dependencies (other Py
 2. After you have a new terminal window open, copy and paste the following command into your terminal and click "enter".
 
     ```bash
-    conda activate base
+    conda create --name creative_text
     ```
 
-    You will notice that the word "base" will appear in parentheses at the start of your path.
+    It will ask you "Proceed ([y]/n)?. Simply type 'y' and then hit enter. What we have just done was create a new Python environment named "creative_text" which is a way for us to isolate specific packages that we need to make our code work.
 
-   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/2715f027-bbdc-4eac-8230-945281c3b035)
-
-3. The next thing we need to do is install the creative-text package by copying and pasting the following command into your terminal and click "enter". This will install the most recent stable version v1.0.0 of the creative-text package.
+3. After we have successfully created our virtual environemnt, we need to activate it by simply copying and paste the following command into your terminal and click "enter".
 
     ```bash
-    pip install git+https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2.git@v1.0.0
+    conda activate creative_text
     ```
-    
-4. And lastly, we need to install the project's dependencies (other packages needed in order for the creative-text package to work)
+
+    You will notice that the words (creative_text) will now appear in parenthesis on your screen. This means that we have successfully activated our environment.
+
+    ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/3a3d5ff4-370f-47f5-84d5-77ad255f7aa0)
+
+4. Now that we have our environment activated, we first need to install a package called 'pip' which will allow us to install the Creative Text Tagger. To do this, simply copy and paste the following command into your terminal and click "enter".
 
     ```bash
-    pip install -r https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/raw/v1.0.0/requirements.txt
+    conda install pip
     ```
 
+    It will again ask you "Proceed ([y]/n)?. Simply type 'y' and then hit enter.
+   
+5. The last thing we need to do is install the creative-text package by copying and pasting the following command into your terminal and click "enter". This will install the most recent stable version v1.1.0 of the creative-text package as well as all of its dependencies (packages that this package is built on). It might take some time to finish downloading everything, but once it is complete, we should be good to go.
+
+    ```bash
+    pip install git+https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2.git@v1.1.0
+    ```
