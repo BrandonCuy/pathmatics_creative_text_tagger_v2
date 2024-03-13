@@ -1,8 +1,10 @@
 import textwrap
+from time import time
 import re
 import os
 import pandas as pd
 import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt 
 from tqdm import tqdm
 
@@ -10,21 +12,32 @@ class CreativeText:
 
     def __init__(self):
         self.tags = None
+        self.df = None
         self.output_folder_name = "output"
+    
+    def load_tags(
+            self,
+            tags
+    ):
+        """
+        Intakes a dictionary of keyword tags and assigns them to the 'self.tags' variable
 
-    @property
-    def set_tags(self):
-        return self.tags
+        Args:
+            tags (dictionary):
+                - A dictionary of keyword tags
 
-    @set_tags.setter
-    def set_tags(self, new_tags):
+        Returns:
+            None
 
+        Note:
+            This method updates the 'self.tags' variable with the provided keyword tags dictionary.
+        """
         # Check if tag_dict is a dictionary data type
-        if not isinstance(new_tags, dict):
+        if not isinstance(tags, dict):
             raise TypeError("'tags' must be a dictionary.")
 
         # Check if all keys are string and values are list lists of strings
-        for key, value in new_tags.items():
+        for key, value in tags.items():
             if not isinstance(key, str):
                 raise TypeError(f"Key '{key}' must be a string.")
             if not isinstance(value, list):
@@ -32,7 +45,7 @@ class CreativeText:
             if any(not isinstance(item, str) for item in value):
                 raise TypeError(f"All items in the list for key '{key}' must be strings.")
 
-        self.tags = new_tags
+        self.tags = tags
 
     def load_csvs(
             self,
@@ -40,14 +53,17 @@ class CreativeText:
             skiprows=1
             ):
         """
-        Concatenates CSV files into a single pandas DataFrame.
+        Concatenates CSV files into a single pandas DataFrame and assigns it to the 'self.df' varibale.
 
         Args:
             filepaths (list):
                 - List of filepaths for CSV files.
 
         Returns:
-            pd.DataFrame: Concatenated DataFrame.
+            None
+
+        Note:
+            This method updates the 'self.df' variable with concatenated Pandas dataframe of the provided CSV files.
         """
 
         if not isinstance(filepaths, list):
@@ -74,7 +90,67 @@ class CreativeText:
         # Concatenate the list of DataFrames into a single DataFrame
         result_df = pd.concat(dfs, ignore_index=True)
 
-        return result_df
+        self.df = result_df
+
+    def get_word_frequency(
+            self,
+            creative_text_column_name="Creative Text",
+            ngram_range = (1,2),
+            stop_words= "english"
+            ):
+        """
+        Returns a dataframe of word frequency in the 'Creative Text' column of the 'self.df' dataframe.
+
+        Args:
+            creative_text_column_name (str):
+                - The name of the creative text column in the self.df dataframe.
+                - Defaults to "Creative Text"
+            ngram_range (tuple):
+                - The lower and upper boundary for keyword phrases to search for.
+                - For example (1,1), will only search for single word phrases but (1,2) will search for both single word and two word phrases.
+                - Defaults to (1,2)
+            stop_words (str):
+                - Whether or not to remove common stop words from the results. (ex. words like "a", "the", "is", etc.)
+                - Defaults to "english"
+
+        Returns:
+            Dataframe
+                - Returns a pandas dataframe of word frequency in the creative text column of the self.df dataframe.
+
+        Notes:
+            - Before running this method, you must first set the 'self.df' variable by using the load_csvs() method.
+        """
+
+        # Create a CountVectorizer instance
+        vectorizer = CountVectorizer(
+            stop_words=stop_words,
+            ngram_range=ngram_range,
+            binary=True
+            )
+
+        # Get a list of unique creative text from the self.df dataframe
+        creative_text_list = self.df.dropna(subset=[creative_text_column_name])[creative_text_column_name].unique().tolist()
+
+        # Transform the text data into a bag of words representation
+        X = vectorizer.fit_transform(creative_text_list)
+
+        # Get the feature names (words)
+        feature_names = vectorizer.get_feature_names_out()
+
+        # Convert the result to a dense NumPy array for better visualization
+        dense_array = X.toarray()
+
+        # Create a Pandas DataFrame
+        df = pd.DataFrame(dense_array, columns=feature_names)
+
+        # Transform output dataframe
+        word_counts = df.sum(axis=0)
+
+        result_df = pd.DataFrame({'word': feature_names, 'frequency_count': word_counts}).reset_index(drop=True)
+        result_df["total_unique_creatives_analyzed"] = len(creative_text_list)
+        result_df["frequency_percentage"] = round(result_df["frequency_count"] / result_df["total_unique_creatives_analyzed"], 2)
+
+        return result_df.sort_values(by="frequency_count", ascending=False).reset_index(drop=True)
 
     def tag_creative_text(
             self,
@@ -120,6 +196,7 @@ class CreativeText:
     def get_tagged_creative_text(
             self,
             df,
+            tags,
             creative_text_column_name="Creative Text"
             ):
         """
@@ -137,9 +214,6 @@ class CreativeText:
             dataframe:
                 - Returns a copy of the inputted dataframe with new columns with boolean values for whether or not tag values were found in the creative text.
         """
-
-        if self.tags is None:
-            raise RuntimeError("'tags' is not set. Please use the 'set_tags' setter to set desired tags.")
         
         # There must be a creative text column in the dataframe
         if creative_text_column_name not in df.columns:
@@ -153,14 +227,15 @@ class CreativeText:
 
         # Uses the tag_creative_text() method on each creative text row for each tag in the tags dict
         # Creates a new boolean column in the returned df for each tag name
-        for tag_name in tqdm(self.tags):
+        for tag_name in tqdm(tags):
             df[f"{tag_name}"] = df.apply(lambda x: self.tag_creative_text(x[creative_text_column_name], tag_name), axis=1)
 
-        return df  
+        return df
 
     def chart_data(
             self,
-            df,
+            tagged_df,
+            tags,
             output_file_name,
             spend_column_name="Spend",
             impression_column_name="Impressions"
@@ -174,7 +249,7 @@ class CreativeText:
             plt.style.use("seaborn-v0_8")
 
             # Create number of subplots equal to number of tags
-            number_of_subplots = len(self.tags)
+            number_of_subplots = len(tags)
 
             fig, axes = plt.subplots(nrows=number_of_subplots, ncols=1, sharex=True)
             if not isinstance(axes, np.ndarray):
@@ -184,9 +259,9 @@ class CreativeText:
             fig.supxlabel("Date")
             fig.supylabel(metric)
 
-            for ax, tag in zip(axes, self.tags):
+            for ax, tag in zip(axes, tags):
 
-                filtered_df = df[df[tag] == True].groupby(by=["Date"])[[spend_column_name, impression_column_name]].sum().reset_index()
+                filtered_df = tagged_df[tagged_df[tag] == True].groupby(by=["Date"])[[spend_column_name, impression_column_name]].sum().reset_index()
 
                 ax.plot(pd.to_datetime(filtered_df["Date"]), filtered_df[metric], label=tag)
                 ax.legend(loc="upper left")
@@ -199,7 +274,6 @@ class CreativeText:
 
     def get_tagged_creative_text_csv(
             self,
-            file_path_list,
             output_file_name,
             filter_output=True,
             creative_text_column_name="Creative Text",
@@ -209,12 +283,13 @@ class CreativeText:
             ):
 
         print("Tagging creative text...")
-        
-        # Load csvs into an untagged dataframe
-        untagged_df = self.load_csvs(file_path_list, skiprows)
-        
+
         # Create new dataframe of tagged creative text
-        tagged_df = self.get_tagged_creative_text(untagged_df, creative_text_column_name)
+        tagged_df = self.get_tagged_creative_text(
+            self.df, 
+            self.tags, 
+            creative_text_column_name
+            )
         
         if filter_output is True:
             
@@ -231,4 +306,10 @@ class CreativeText:
         tagged_df.to_csv(f"{self.output_folder_name}/{output_file_name}/{output_file_name}.csv", sep=",", encoding="utf-8", index=False)
         print(f"{output_file_name}.csv successfully written to {self.output_folder_name}/{output_file_name} folder")
 
-        self.chart_data(tagged_df, output_file_name, spend_column_name, impressions_column_name)
+        self.chart_data(
+            tagged_df,
+            self.tags,
+            output_file_name,
+            spend_column_name,
+            impressions_column_name
+            )
