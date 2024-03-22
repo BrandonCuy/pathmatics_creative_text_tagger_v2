@@ -14,7 +14,7 @@ This walkthrough and installation guide assumes no previous coding knowledge or 
 
 ## Step 1: Anaconda Installation
 
-I recommend installing Python through Anaconda which is an open source package and environment management tool commonly utilized in the data science field. I recommend installing Anaconda because it comes pre-installed with Python as well as a variety of commonly used packages. Additionally it provides a convenient UI that you can use to access much of the functionality that you normally would through the command line. The below link connects to the official Anaconda website where you can then install the 64Bit Graphical Installer for whichever operating system you are using.
+I recommend installing Python through Anaconda which is an open source package and environment management tool commonly utilized in the data science field. I recommend installing Anaconda because it comes pre-installed with Python as well as a variety of commonly used packages. Additionally it provides a convenient UI that you can use to access much of the functionality that you normally would through the command line. The below link connects to the official Anaconda website where you can then install the 64Bit Graphical Installer for whichever operating system you are using. When installing Anaconda, you simply need to follow the default selections for installation and you should be good to go.
 
 [Anaconda Download Webpage](https://www.anaconda.com/download#downloads)
 
@@ -30,28 +30,32 @@ In order to make the process of using these functions easier, I have created a s
 
 [Creative Text Example Workbook Google Drive](https://drive.google.com/drive/folders/1wZpnN7AM1UlJ8BVbpq2RHduL73Pm-_Zl?usp=drive_link)
 
-## Step 4: creative-text Package Installation
+## Step 4: creativetext Package Installation
 
 Next we need to install the creative-text package and its dependencies (other Python packages needed in order for creative-text to run). We need to do this via the command line (can be scary to interact with at first but all you will need to do is just some copying and pasting).
 
 1. Open up a new terminal window
 
-   - On Windows, click on the search bar and type "Command Prompt" to pull up a new terminal window.
+   - On Windows, click on the search bar and type "Anaconda Powershell Prompt" to pull up a new Anaconda prompt window.
    - On Mac, use the keyboard shortcut "Command + Space" and then type "Terminal" to pull up a new terminal window.
 
    Your terminal should look something like this (I am on Windows so your terminal will look slightly different on Mac, but the following commands remain the same between the two).
 
-   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/814f7620-3cab-4fa0-b9fb-43cb4cf72e83)
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/53887c16-2017-47db-9a26-08e31949f96e)
 
-2. After you have a new terminal window open, copy and paste the following command into your terminal and click "enter".
+2. Create a Conda environment
+
+   After you have a new terminal window open, we now need to create a Conda environment. To do this, copy and paste the following command into your terminal and click "enter".
 
     ```bash
-    conda create --name creative_text
+    conda create --name creative_text python=3.12.2
     ```
 
-    It will ask you "Proceed ([y]/n)?. Simply type 'y' and then hit enter. What we have just done was create a new Python environment named "creative_text" which is a way for us to isolate specific packages that we need to make our code work.
+    It will ask you "Proceed ([y]/n)?. Simply type 'y' and then hit enter. What we have just done was create a new Conda Python environment named "creative_text". What a Conda environment allows us to do is isolate only the specific packages that we need for us to run the Creative Text Tagger and is a good practice to do when working on projects in Python.
 
-3. After we have successfully created our virtual environemnt, we need to activate it by simply copying and paste the following command into your terminal and click "enter".
+3. Activate the Conda Environment
+
+   After we have successfully created our virtual environemnt, we need to activate it by simply copying and paste the following command into your terminal and click "enter".
 
     ```bash
     conda activate creative_text
@@ -59,24 +63,76 @@ Next we need to install the creative-text package and its dependencies (other Py
 
     You will notice that the words (creative_text) will now appear in parenthesis on your screen. This means that we have successfully activated our environment.
 
-    ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/3a3d5ff4-370f-47f5-84d5-77ad255f7aa0)
+    ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/3b0743da-2b74-4c9d-b9d3-6b3b4968d384)
 
-4. Now that we have our environment activated, we first need to install a package called 'pip' which will allow us to install the Creative Text Tagger. To do this, simply copy and paste the following command into your terminal and click "enter".
+4. Install the creative-text Package
 
-    ```bash
-    conda install pip
-    ```
-
-    It will again ask you "Proceed ([y]/n)?. Simply type 'y' and then hit enter.
-   
-5. The next thing we need to do is install the creative-text package by copying and pasting the following command into your terminal and click "enter". This will install the most recent stable version v1.1.0 of the creative-text package. It might take some time to finish downloading everything.
+   Now that we have our Conda environment activated, the next thing we need to do is install the creative-text package by copying and pasting the following command into your terminal and click "enter". This will install the most recent stable version v1.1.0 of the creative-text package. It might take some time to finish downloading everything.
 
     ```bash
     pip install git+https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2.git@v1.1.0
     ```
 
-6. The last thing we need to do is install the dependencies of the Creative Text package (other packages that the Creative Text packages requires to run). We can do this by copying and pasting the following command into your terminal and clicking "enter".
+5. Install the creative-text Package Dependencies
+
+   The last thing we need to do is install the dependencies of the Creative Text package (other packages that the Creative Text packages requires to run). We can do this by copying and pasting the following command into your terminal and clicking "enter".
 
     ```bash
     pip install -r https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/raw/v1.1.0/requirements.txt
     ```
+
+    And with that you should be good to go! You can now exit out of your command prompt.
+
+## Step 5: Using the Text Tagger in VS Code
+
+Once you have completed all of the previous steps, we just need to set up VS Code. Follow the below instructions to get everything set up to use:
+
+1. Open up the VS Code program and Install Required Extensions
+
+   VS Code is a text editor that has support for many different coding languages. In order to set our program up to use Python, we need to install some extensions first. To do this, first click on the square Tetris like symbol on the left hand side bar to open up the Extensions Tab.
+
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/7d04efa6-4edc-4e2b-815c-7ddbd806e733)
+
+   Then you will want to install the "Python" extension
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/0bd10ba1-5081-416c-be24-2a9e008271c8)
+
+   Lastly, you will also want to install the "Jupyter" extension
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/8dc1a992-2d9e-4294-944b-f3cdb74bed41)
+
+2. Open up the Example Folder that You Downloaded in Step 3
+
+   Next, we will want to open up the example that I have provided in the Google Drive link in Step 3. To do this, simply click on the document icon on the left side bar and then click "Open Folder". Then simply navigate to where you downloaded contents from the Google Drive.
+
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/01569bda-67ff-4fa9-8151-cfda501142d8)
+
+   Once you have opened the folder, you should see a file directory appear in the Explorer tab on the left hand side bar. You will then want to click on the file titled "creative_text_tagger_template.ipynb". Once you do that, it should open up the file and look something like the below screenshot.
+
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/4de151d8-e679-488a-854e-686333efb5c1)
+
+3. Select a Python Interpreter
+
+   The last thing we need to do before running code, is select our Python interpreter. To do this click on the area cirlced in red in the screenshot below. Mine says "Python" but yours will likely say "Select Notebook Kernel"
+
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/7a0beda6-6a08-4665-8e5f-eaed15ec7d23)
+
+   This will open up a dropdown at the top. Next what you want to do is click "Select Another Kernel..."
+
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/0a72db37-8188-40aa-b98f-b497a6920e01)
+
+   Then select "Python Environments"
+
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/f5d0524f-3ac7-4bb5-a030-76377ddf4687)
+
+   And lastly, you will notice that the "creative_text" Conda environment that we created in the terminal earlier will appear. This is what we want to use in order to run the package that we downloaded earlier.
+
+   ![image](https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/assets/73131313/32bc31d9-be1a-4343-8577-cf9303a61544)
+
+   And with that you should be all set!
+
+
+   
+
+   
+
+
+
