@@ -5,6 +5,12 @@ The creative_text Python package includes functionality for intaking one or more
 
 This walkthrough and installation guide assumes no previous coding knowledge or understanding of Python, however if you would like to learn more about Python and its functionality, I highly recommend [Harvard's free CS50 Introduction to Programming with Python](https://www.edx.org/learn/python/harvard-university-cs50-s-introduction-to-programming-with-python) online course.
 
+## Video Tutorial
+
+To make things easier for first time users, I have also recorded a tutorial video where I walk through the installation process of everything you will need in order to get the Creative Text Tagger up and running. I highly recommend taking a look at the tutorial video found at the link below.
+
+[Brandon's Creative Text Tagger Package Installation Tutorial Video](https://sensortower.zoom.us/rec/share/XJwRXKfljwZRdCny4TMPJyD4B8WSXxKvtRTiBIbL5IPfOodZGy7m1H6Yaztq2XGS.4z87TanSMObfAhnL?startTime=1711142606000)
+
 ## Table of Contents
 
 - Anaconda Installation
