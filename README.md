@@ -11,6 +11,7 @@ This walkthrough and installation guide assumes no previous coding knowledge or 
 - Visual Studio Code Installation
 - Example Workbook Download
 - creative-text Package Installation
+- Using the Text Tagger in VS Code
 
 ## Step 1: Anaconda Installation
 
