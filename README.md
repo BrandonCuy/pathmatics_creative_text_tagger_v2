@@ -77,7 +77,7 @@ Next we need to install the creative-text package and its dependencies (other Py
    Now that we have our Conda environment activated, the next thing we need to do is install the creative-text package by copying and pasting the following command into your terminal and click "enter". This will install the most recent stable version v1.1.0 of the creative-text package. It might take some time to finish downloading everything.
 
     ```bash
-    pip install git+https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2.git@v1.1.0
+    pip install git+https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2.git@v1.1.1
     ```
 
 5. Install the creative-text Package Dependencies
@@ -85,7 +85,7 @@ Next we need to install the creative-text package and its dependencies (other Py
    The last thing we need to do is install the dependencies of the Creative Text package (other packages that the Creative Text packages requires to run). We can do this by copying and pasting the following command into your terminal and clicking "enter".
 
     ```bash
-    pip install -r https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/raw/v1.1.0/requirements.txt
+    pip install -r https://github.com/BrandonCuy/pathmatics_creative_text_tagger_v2/raw/v1.1.1/requirements.txt
     ```
 
     And with that you should be good to go! You can now exit out of your command prompt.
