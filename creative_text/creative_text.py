@@ -95,7 +95,8 @@ class CreativeText:
     def get_word_frequency(
             self,
             creative_text_column_name="Creative Text",
-            ngram_range = (1,2),
+            max_features=1000,
+            ngram_range= (1,2),
             stop_words= "english"
             ):
         """
@@ -123,6 +124,7 @@ class CreativeText:
 
         # Create a CountVectorizer instance
         vectorizer = CountVectorizer(
+            max_features=max_features,
             stop_words=stop_words,
             ngram_range=ngram_range,
             binary=True
